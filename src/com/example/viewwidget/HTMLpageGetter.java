@@ -31,6 +31,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.RemoteViews;
 
 public class HTMLpageGetter extends AsyncTask<Void, Void, Void> {
@@ -75,6 +76,7 @@ public class HTMLpageGetter extends AsyncTask<Void, Void, Void> {
 		this.sp = sp;
 		this.appWidgetManager = appWidgetManager;
 	}
+	
 	@Override 
 	protected Void doInBackground(Void... params) {
 		HttpClient httpclient = new DefaultHttpClient();
@@ -87,31 +89,36 @@ public class HTMLpageGetter extends AsyncTask<Void, Void, Void> {
 	    final String widgetPassword = sp.getString(ConfigActivity.WIDGET_PASSWORD + widgetId, null);
 	    if (widgetPassword == null) start = false;
 	    if(start) {
-		try {
-		    List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
-		    nameValuePairs.add(new BasicNameValuePair(LOGIN, widgetLogin));
-		    nameValuePairs.add(new BasicNameValuePair(PASSWORD, widgetPassword));
-		    nameValuePairs.add(new BasicNameValuePair(ATHER_INFO, ATHER_INFO_VALUE));
-		   
-		    httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-		    HttpResponse response = httpclient.execute(httpPost); 
-		   
-		    CookieStore store = ((DefaultHttpClient) httpclient).getCookieStore();
-		    HttpContext ctx = new BasicHttpContext();
-		    ctx.setAttribute(ClientContext.COOKIE_STORE, store);
-		    response = httpclient.execute(httpGet, ctx);
-
-		    String responseBody = getStringFromResponse(response);
-		    doc = Jsoup.parse(responseBody);
-		    
-		    Element accountValue = doc.select("div.article").select("h1").first();
-		    resultValueString += accountValue.text();
-	        
-		    Element account = doc.select("div[class=item user-desk-plan]").select("strong").first();  
-		    schet += account.text();
-		} catch (ClientProtocolException e) {
-		} catch (IOException e) { 
-		}}
+			try {
+			    List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+			    
+			    Log.d("WIDGET", "WIDGET");
+			    nameValuePairs.add(new BasicNameValuePair(LOGIN, widgetLogin));
+			    nameValuePairs.add(new BasicNameValuePair(PASSWORD, widgetPassword));
+			    nameValuePairs.add(new BasicNameValuePair(ATHER_INFO, ATHER_INFO_VALUE));
+			    String responseBody = "";
+			    httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+			   
+			    HttpResponse response = httpclient.execute(httpPost); 
+			   
+			    CookieStore store = ((DefaultHttpClient) httpclient).getCookieStore();
+			    HttpContext ctx = new BasicHttpContext();
+			    ctx.setAttribute(ClientContext.COOKIE_STORE, store);
+			    response = httpclient.execute(httpGet, ctx);
+	
+			    responseBody = getStringFromResponse(response);
+				 
+			    doc = Jsoup.parse(responseBody);
+			    
+			    Element accountValue = doc.select("div.article").select("h1").first();
+			    resultValueString += accountValue.text();
+		        
+			    Element account = doc.select("div[class=item user-desk-plan]").select("strong").first();  
+			    schet += account.text();
+			} catch (ClientProtocolException e) {
+			} catch (IOException e) { 
+		   }
+		}
 		return null;
 	}
 	
@@ -142,11 +149,14 @@ public class HTMLpageGetter extends AsyncTask<Void, Void, Void> {
 	   
 	      RemoteViews widgetView = new RemoteViews(context.getPackageName(),
 	          R.layout.widget);
-	      double valueAccount = parseStringGetManey(resultValueString);
-	      setWidgetColor(valueAccount, widgetView);
-	      widgetView.setTextViewText(R.id.tv, resultValueString);
-	      widgetView.setTextViewText(R.id.accountValue, "Номер счета: " + schet);
-	  
-	      appWidgetManager.updateAppWidget(widgetId, widgetView);
+	      if(!resultValueString.equals("")) {
+		      double valueAccount = parseStringGetManey(resultValueString);
+		      setWidgetColor(valueAccount, widgetView);
+		      widgetView.setTextViewText(R.id.tv, resultValueString);
+		      widgetView.setTextViewText(R.id.accountValue, "Номер счета: " + schet);
+		  
+		      appWidgetManager.updateAppWidget(widgetId, widgetView);
+	      }
+	      
 	    }
 }

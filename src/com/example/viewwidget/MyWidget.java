@@ -2,19 +2,21 @@ package com.example.viewwidget;
 
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.os.Bundle;
+import android.widget.Toast;
 
 public class MyWidget extends AppWidgetProvider {
 	public static String widgetLogin;
 	public static String widgetPassword;
 	
 
-  @Override
-  public void onEnabled(Context context) {
-    super.onEnabled(context);
-  }
+  
+ 
 
   
   @Override
