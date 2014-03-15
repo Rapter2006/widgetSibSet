@@ -68,11 +68,11 @@
 
     <Button
         style="@style/CustomStyleButton"
+        android:id="@+id/save"
         android:layout_marginTop="20dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:onClick="onClick"
         android:text="@string/widget_save_data" >
 
     </Button>

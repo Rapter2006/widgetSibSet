@@ -53,12 +53,6 @@ public class MyWidget extends AppWidgetProvider {
   static void updateWidget(Context context, AppWidgetManager appWidgetManager,
       SharedPreferences sp, int widgetID) {
     
-    // Читаем параметры Preferences
-    widgetLogin = sp.getString(ConfigActivity.WIDGET_LOGIN + widgetID, null);
-    if (widgetLogin == null) return;
-    widgetPassword = sp.getString(ConfigActivity.WIDGET_PASSWORD + widgetID, null);
-    if (widgetPassword == null) return;
-    
-    new HTMLpageGetter(context, appWidgetManager, widgetID).execute();
+    new HTMLpageGetter(context, appWidgetManager, sp, widgetID).execute();
   }
 }

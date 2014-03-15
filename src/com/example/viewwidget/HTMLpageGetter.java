@@ -25,8 +25,10 @@ import org.apache.http.protocol.HttpContext;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.widget.RemoteViews;
@@ -36,6 +38,7 @@ public class HTMLpageGetter extends AsyncTask<Void, Void, Void> {
 	private Context context;
 	private int widgetId;
 	private String schet = "";
+	private SharedPreferences sp;
 	private Document doc;
 	private AppWidgetManager appWidgetManager;
 	private String LOGIN = "login";
@@ -66,9 +69,10 @@ public class HTMLpageGetter extends AsyncTask<Void, Void, Void> {
 	}
 	
 	
-	public HTMLpageGetter(Context context, AppWidgetManager appWidgetManager, int id) {
+	public HTMLpageGetter(Context context, AppWidgetManager appWidgetManager, SharedPreferences sp, int id) {
 		this.context = context;
 		this.widgetId = id;
+		this.sp = sp;
 		this.appWidgetManager = appWidgetManager;
 	}
 	@Override 
@@ -76,11 +80,17 @@ public class HTMLpageGetter extends AsyncTask<Void, Void, Void> {
 		HttpClient httpclient = new DefaultHttpClient();
 		HttpPost httpPost = new HttpPost(MAIN_SITE_PAGE);
 		HttpGet httpGet = new HttpGet(BALANSE_PAGE);
-	
+		 // Читаем параметры Preferences
+		boolean start = true;
+	    final String widgetLogin = sp.getString(ConfigActivity.WIDGET_LOGIN + widgetId, null);
+	    if (widgetLogin == null) start = false;
+	    final String widgetPassword = sp.getString(ConfigActivity.WIDGET_PASSWORD + widgetId, null);
+	    if (widgetPassword == null) start = false;
+	    if(start) {
 		try {
 		    List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
-		    nameValuePairs.add(new BasicNameValuePair(LOGIN, MyWidget.widgetLogin));
-		    nameValuePairs.add(new BasicNameValuePair(PASSWORD, MyWidget.widgetPassword));
+		    nameValuePairs.add(new BasicNameValuePair(LOGIN, widgetLogin));
+		    nameValuePairs.add(new BasicNameValuePair(PASSWORD, widgetPassword));
 		    nameValuePairs.add(new BasicNameValuePair(ATHER_INFO, ATHER_INFO_VALUE));
 		   
 		    httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
@@ -100,8 +110,8 @@ public class HTMLpageGetter extends AsyncTask<Void, Void, Void> {
 		    Element account = doc.select("div[class=item user-desk-plan]").select("strong").first();  
 		    schet += account.text();
 		} catch (ClientProtocolException e) {
-		} catch (IOException e) {
-		}
+		} catch (IOException e) { 
+		}}
 		return null;
 	}
 	

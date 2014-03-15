@@ -11,4 +11,5 @@
 	<string name="widget_account_text">Номер счета: </string>
 	<string name="widget_save_data">Сохранить</string>
 	<string name="widget_our_data">Логин - пароль от сайта 211.ru</string>
+	<string name="widget_login_warning">Заполните все поля!</string>
 </resources>

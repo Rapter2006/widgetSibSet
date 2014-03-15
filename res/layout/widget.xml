@@ -9,7 +9,7 @@
         android:id="@+id/accountValue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="18sp" />
+        android:textSize="16sp" />
 
     <TextView
         android:id="@+id/tv"
@@ -17,7 +17,7 @@
         android:layout_height="match_parent"
         android:background="#6600ff00"
         android:text="@string/widget_text"
-        android:textSize="20sp" >
+        android:textSize="18sp" >
     </TextView>
 
 </LinearLayout>
